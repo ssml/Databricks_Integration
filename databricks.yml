@@ -1,0 +1,137 @@
+bundle:
+  name: adb_navis
+  uuid: 148d4119-f970-4d64-95c1-4bd8b28e752a
+
+include:
+  - resources/*.yml
+
+variables:
+  developer_name:
+    description: GitHub username of the developer deploying this bundle
+    default: seaspan-github-user
+  developer_group:
+    description: Databricks developer group permission.
+    default: seaspan-developer-group
+  admin_group:
+    description: Databricks admin group permission.
+    default: seaspan-admin-group
+  power_group:
+    description: Databricks power users group permission.
+    default: seaspan-power-group
+  analyst_group:
+    description: Databricks analyst group permission.
+    default: seaspan-analyst-group
+  scientist_group:
+    description: Databricks scientist group permission.
+    default: seaspan-scientist-group
+  domain_name:
+    description: Domain name for this project
+    default: financial_reporting
+  catalog_name:
+    description: Unity Catalog catalog scoped to this deployment
+    default: ${bundle.target}_corpdatav2
+  env:
+    description: Target environment name (dev, tst, prd) used by notebooks to derive catalog
+    default: ${bundle.target}
+  cluster_id:
+    description: Existing environment-specific cluster ID
+  job_pause_status:
+    description: Whether scheduled jobs are paused (PAUSED or UNPAUSED)
+    default: PAUSED
+  notification_email:
+    description: Email address to receive notifications for this bundle
+    default: "dev_etl@seaspancorp.com"
+  apim_baseurl:
+    description: Email address to receive notifications for this bundle
+    default: ""
+
+presets:
+  tags:
+    domain: ${var.domain_name}
+
+targets:
+  local:
+    mode: development
+    default: true
+    variables:
+      env: dev
+      catalog_name: ${var.developer_name}_local
+      cluster_id: 0814-232803-5eblt1gz
+      apim_baseurl: ${vars.apim_baseurl}
+    workspace:
+      root_path: ~/.bundle/${bundle.name}/local/${var.developer_name}
+      host: https://adb-2714653562668137.17.azuredatabricks.net
+    presets:
+      name_prefix: "[${var.developer_name}-${workspace.current_user.short_name}]"
+    permissions:
+      - level: CAN_MANAGE
+        group_name: ${var.admin_group}
+      - level: CAN_MANAGE
+        group_name: ${var.power_group}
+      - level: CAN_MANAGE
+        group_name: ${var.developer_group}
+      - level: CAN_VIEW
+        group_name: ${var.analyst_group}
+
+  dev:
+    mode: development
+    workspace:
+      host: https://adb-2714653562668137.17.azuredatabricks.net
+    variables:
+      env: dev
+      cluster_id: 0814-232803-5eblt1gz
+      notification_email: dev_etl@seaspancorp.com
+      apim_baseurl: ${vars.apim_baseurl}
+    permissions:
+      - level: CAN_MANAGE
+        group_name: ${var.admin_group}
+      - level: CAN_MANAGE
+        group_name: ${var.power_group}
+      - level: CAN_RUN
+        group_name: ${var.developer_group}
+      - level: CAN_VIEW
+        group_name: ${var.analyst_group}
+      - level: CAN_RUN
+        group_name: ${var.scientist_group}
+
+  tst:
+    mode: production
+    workspace:
+      host: https://adb-2206726032770692.12.azuredatabricks.net
+    variables:
+      cluster_id: 1201-170321-zkw6msoj
+      notification_email: tst_etl@seaspancorp.com
+      apim_baseurl: ${vars.apim_baseurl}
+      job_pause_status: PAUSED
+    permissions:
+      - level: CAN_MANAGE
+        group_name: ${var.admin_group}
+      - level: CAN_MANAGE
+        group_name: ${var.power_group}
+      - level: CAN_RUN
+        group_name: ${var.developer_group}
+      - level: CAN_VIEW
+        group_name: ${var.analyst_group}
+      - level: CAN_RUN
+        group_name: ${var.scientist_group}
+
+  prd:
+    mode: production
+    workspace:
+      host: https://adb-1725080818421844.4.azuredatabricks.net
+    variables:
+      cluster_id: 1204-163352-5dfgqd2r
+      notification_email: etl@seaspancorp.com
+      apim_baseurl: ${vars.apim_baseurl}
+      job_pause_status: UNPAUSED
+    permissions:
+      - level: CAN_MANAGE
+        group_name: ${var.admin_group}
+      - level: CAN_RUN
+        group_name: ${var.power_group}
+      - level: CAN_VIEW
+        group_name: ${var.developer_group}
+      - level: CAN_VIEW
+        group_name: ${var.analyst_group}
+      - level: CAN_VIEW
+        group_name: ${var.scientist_group}
