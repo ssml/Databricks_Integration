@@ -21,4 +21,4 @@ jobs:
         uses: databricks/setup-cli@main
 
       - name: Validate Bundle
-        run: databricks bundle validate
+        run: databricks bundle validate -t dev
