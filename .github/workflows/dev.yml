@@ -26,6 +26,9 @@ jobs:
           [ -n "$DATABRICKS_HOST" ] || exit 1
           [ -n "$DATABRICKS_TOKEN" ] || exit 1
 
+      - name: Test Databricks Auth
+        run: databricks current-user me
+
       - name: Validate Bundle
         run: databricks bundle validate -t dev
 
