@@ -38,7 +38,7 @@ presets:
 targets:
   dev:
   default: true
-    mode: development
+  mode: development
     workspace:
       host: https://adb-2714653562668137.17.azuredatabricks.net
     variables:
