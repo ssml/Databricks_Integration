@@ -4,7 +4,7 @@
 
 resources:
   jobs:
-    BTO:
+    ALPHALINER:
       name: ALPHALINER
       description: >
         Talend Decomm-ALPHALINER
