@@ -1,0 +1,33 @@
+# BTO Job (LubeOil pipeline child job)
+# Triggered only via run_job_task from resources/lubeoil_dashboard.job.yml.
+# No standalone schedule - the source BTO Job's own unused cron (29 0 3/12 * * ?) is intentionally dropped.
+
+resources:
+  jobs:
+    BTO:
+      name: Ankeri_bronze_to_silver
+      description: >
+        Talend Decomm-Ankeri_bronze_to_silver
+
+      tags:
+        Project: Talend Decomm
+        Team: Data_Ops
+        env: ${var.env}
+
+      email_notifications:
+        on_failure:
+          - ${var.notification_email}
+
+      max_concurrent_runs: 1
+
+      parameters:
+        - name: env
+          default: ${var.env}
+
+      tasks:
+        - task_key: ANK_EDW_CHARTERPARTIES
+          existing_cluster_id: ${var.cluster_id}
+          notebook_task:
+            notebook_path: ..src/Databricks_Integration/Ankeri/ANK_EDW_CHARTERPARTIES.py
+            base_parameters:
+              env: ${var.env}

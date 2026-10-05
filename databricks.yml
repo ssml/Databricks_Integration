@@ -114,24 +114,3 @@ targets:
         group_name: ${var.analyst_group}
       - level: CAN_RUN
         group_name: ${var.scientist_group}
-
-  prd:
-    mode: production
-    workspace:
-      host: https://adb-1725080818421844.4.azuredatabricks.net
-    variables:
-      cluster_id: 1204-163352-5dfgqd2r
-      notification_email: etl@seaspancorp.com
-      apim_baseurl: ${vars.apim_baseurl}
-      job_pause_status: UNPAUSED
-    permissions:
-      - level: CAN_MANAGE
-        group_name: ${var.admin_group}
-      - level: CAN_RUN
-        group_name: ${var.power_group}
-      - level: CAN_VIEW
-        group_name: ${var.developer_group}
-      - level: CAN_VIEW
-        group_name: ${var.analyst_group}
-      - level: CAN_VIEW
-        group_name: ${var.scientist_group}

@@ -1,0 +1,47 @@
+# BTO Job (LubeOil pipeline child job)
+# Triggered only via run_job_task from resources/lubeoil_dashboard.job.yml.
+# No standalone schedule - the source BTO Job's own unused cron (29 0 3/12 * * ?) is intentionally dropped.
+
+resources:
+  jobs:
+    BTO:
+      name: UserAccounts
+      description: >
+        Talend Decomm-UserAccouns
+
+      tags:
+        Project: UserAccounts
+        Team: Data_ops
+        env: ${var.env}
+
+      email_notifications:
+        on_failure:
+          - ${var.notification_email}
+
+      max_concurrent_runs: 1
+
+      parameters:
+        - name: env
+          default: ${var.env}
+
+      tasks:
+        - task_key: ADX_DW_UserLogin
+          existing_cluster_id: ${var.cluster_id}
+          notebook_task:
+            notebook_path: ..src/Databricks_Integration/Internal User/ADX_DW_UserLogin.ipynb
+            base_parameters:
+              env: ${var.env}
+
+        - task_key: SF_DW_UserLogin
+          existing_cluster_id: ${var.cluster_id}
+          notebook_task:
+            notebook_path: ..src/Databricks_Integration/Internal User/SF_DW_UserLogin.ipynb
+            base_parameters:
+              env: ${var.env}
+
+        - task_key: azAD_DW_UserLogin
+          existing_cluster_id: ${var.cluster_id}
+          notebook_task:
+            notebook_path: ..src/Databricks_Integration/Internal User/SF_DW_UserLogin.ipynb
+            base_parameters:
+              env: ${var.env}
