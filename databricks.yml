@@ -51,8 +51,7 @@ targets:
         group_name: ${var.admin_group}
       - level: CAN_RUN
         group_name: ${var.developer_group}
-
-
+  
   tst:
     mode: production
     workspace:
