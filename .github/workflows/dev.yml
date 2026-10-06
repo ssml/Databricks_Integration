@@ -23,13 +23,23 @@ jobs:
           HOST_STRIPPED="${DATABRICKS_HOST#*://}"
           echo "${{ secrets.DATABRICKS_HOST_IP }} $HOST_STRIPPED" | sudo tee -a /etc/hosts
 
+      - name: Azure Authentication
+        uses: azure/login@v3
+        with:
+          creds: '{"clientId":"${{ secrets.CLIENT_ID }}","clientSecret":"${{ secrets.CLIENT_SECRET }}","tenantId":"${{ secrets.TENANT_ID }}"}'
+          allow-no-subscriptions: true
+
       - name: Setup Databricks CLI
         uses: databricks/setup-cli@main
 
-      - name: Check Secrets
-        run: |
-          [ -n "$DATABRICKS_HOST" ] || exit 1
-          [ -n "$DATABRICKS_TOKEN" ] || exit 1
+      - name: Setup Databricks CLI
+        uses: databricks/setup-cli@main
+
+      - name: Test Databricks Authentication
+        run: databricks auth describe
+
+      - name: Test Databricks Connection
+        run: databricks current-user me
 
       - name: Validate Bundle
         run: databricks bundle validate -t dev
