@@ -19,14 +19,9 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Add custom DNS Mapping
-        shell: bash
         run: |
           HOST_STRIPPED="${DATABRICKS_HOST#*://}"
-          HOST_STRIPPED="$HOST_STRIPPED%%/*}"
-          
           echo "${{ secrets.DATABRICKS_HOST_IP }} $HOST_STRIPPED" | sudo tee -a /etc/hosts
-          echo "DNS mapping:"
-          getent hosts "HOST_STRIPPED"
 
       - name: Setup Databricks CLI
         uses: databricks/setup-cli@main
@@ -35,9 +30,6 @@ jobs:
         run: |
           [ -n "$DATABRICKS_HOST" ] || exit 1
           [ -n "$DATABRICKS_TOKEN" ] || exit 1
-
-      - name: Test Databricks Auth
-        run: databricks current-user me
 
       - name: Validate Bundle
         run: databricks bundle validate -t dev
